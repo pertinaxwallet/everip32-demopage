@@ -2,6 +2,15 @@
   import "./Styles.svelte";
   import { Icon, Input, Field, Details, Row, Col, Button } from "svelte-chota";
   import Loading from "./Loading.svelte";
+  import { beforeUpdate } from "svelte";
+
+  let detected_web_extension = false;
+
+  beforeUpdate(() => {
+    if (window.everscale) {
+      detected_web_extension = true;
+    }
+  });
 
   export let loaded;
 
@@ -25,8 +34,14 @@
 
     window.everscale
       .request({
-        method: "ever_" + document.getElementById("ever_MODULE_METHOD_module").value  + "_" + document.getElementById("ever_MODULE_METHOD_method").value,
-        params: JSON.parse(document.getElementById("ever_MODULE_METHOD_params").value),
+        method:
+          "ever_" +
+          document.getElementById("ever_MODULE_METHOD_module").value +
+          "_" +
+          document.getElementById("ever_MODULE_METHOD_method").value,
+        params: JSON.parse(
+          document.getElementById("ever_MODULE_METHOD_params").value
+        ),
       })
       .then((result) => {
         ever_MODULE_METHOD_output.innerText = JSON.stringify(result);
@@ -107,7 +122,9 @@
   };
 
   const ever_endpoint = (event) => {
-    const ever_endpoint_output = document.getElementById("ever_endpoint_output");
+    const ever_endpoint_output = document.getElementById(
+      "ever_endpoint_output"
+    );
 
     window.everscale
       .request({
@@ -137,7 +154,8 @@
           amount: Number(
             document.getElementById("ever_sendTransaction_amount").value
           ).valueOf(),
-          message: document.getElementById("ever_sendTransaction_message").value,
+          message: document.getElementById("ever_sendTransaction_message")
+            .value,
         },
       })
       .then((result) => {
@@ -156,7 +174,9 @@
     window.everscale
       .request({
         method: "ever_signMessage",
-        params: { data: document.getElementById("ever_signMessage_data").value },
+        params: {
+          data: document.getElementById("ever_signMessage_data").value,
+        },
       })
       .then((result) => {
         ever_signMessage_output.innerText = JSON.stringify(result);
@@ -289,8 +309,10 @@
     let filter;
 
     try {
-      filter = JSON.parse(document.getElementById("ever_subscribe_filter").value);
-    } catch(e) {
+      filter = JSON.parse(
+        document.getElementById("ever_subscribe_filter").value
+      );
+    } catch (e) {
       ever_subscribe_output.innerText = "Filter must be valid JSON object";
       return;
     }
@@ -299,7 +321,8 @@
       .request({
         method: "ever_subscribe",
         params: {
-          collection: document.getElementById("ever_subscribe_collection").value,
+          collection: document.getElementById("ever_subscribe_collection")
+            .value,
           filter: filter,
           result: document.getElementById("ever_subscribe_result").value,
         },
@@ -339,7 +362,7 @@
       "listening_message_output"
     );
 
-    window.everscale.on("message", function(event) {
+    window.everscale.on("message", function (event) {
       listening_message_output.innerText += JSON.stringify(event) + "\n";
     });
   };
@@ -350,7 +373,7 @@
     );
 
     window.everscale.off("message");
-    listening_message_output.innerText = '';
+    listening_message_output.innerText = "";
   };
 
   const enable_listening_endpointChanged = (event) => {
@@ -358,8 +381,9 @@
       "listening_endpointChanged_output"
     );
 
-    window.everscale.on("endpointChanged", function(event) {
-      listening_endpointChanged_output.innerText += JSON.stringify(event) + "\n";
+    window.everscale.on("endpointChanged", function (event) {
+      listening_endpointChanged_output.innerText +=
+        JSON.stringify(event) + "\n";
     });
   };
 
@@ -369,7 +393,7 @@
     );
 
     window.everscale.off("endpointChanged");
-    listening_endpointChanged_output.innerText = '';
+    listening_endpointChanged_output.innerText = "";
   };
 
   const enable_listening_unlockStateChanged = (event) => {
@@ -377,8 +401,9 @@
       "listening_unlockStateChanged_output"
     );
 
-    window.everscale.on("unlockStateChanged", function(event) {
-      listening_unlockStateChanged_output.innerText += JSON.stringify(event) + "\n";
+    window.everscale.on("unlockStateChanged", function (event) {
+      listening_unlockStateChanged_output.innerText +=
+        JSON.stringify(event) + "\n";
     });
   };
 
@@ -388,7 +413,7 @@
     );
 
     window.everscale.off("unlockStateChanged");
-    listening_unlockStateChanged_output.innerText = '';
+    listening_unlockStateChanged_output.innerText = "";
   };
 
   const enable_listening_accountChanged = (event) => {
@@ -396,7 +421,7 @@
       "listening_accountChanged_output"
     );
 
-    window.everscale.on("accountChanged", function(event) {
+    window.everscale.on("accountChanged", function (event) {
       listening_accountChanged_output.innerText += JSON.stringify(event) + "\n";
     });
   };
@@ -407,7 +432,7 @@
     );
 
     window.everscale.off("accountChanged");
-    listening_accountChanged_output.innerText = '';
+    listening_accountChanged_output.innerText = "";
   };
 
   const enable_listening_connect = (event) => {
@@ -415,7 +440,7 @@
       "listening_connect_output"
     );
 
-    window.everscale.on("connect", function(event) {
+    window.everscale.on("connect", function (event) {
       listening_connect_output.innerText += JSON.stringify(event) + "\n";
     });
   };
@@ -426,7 +451,7 @@
     );
 
     window.everscale.off("connect");
-    listening_connect_output.innerText = '';
+    listening_connect_output.innerText = "";
   };
 
   const enable_listening_disconnect = (event) => {
@@ -434,7 +459,7 @@
       "listening_disconnect_output"
     );
 
-    window.everscale.on("disconnect", function(event) {
+    window.everscale.on("disconnect", function (event) {
       listening_disconnect_output.innerText += JSON.stringify(event) + "\n";
     });
   };
@@ -445,7 +470,7 @@
     );
 
     window.everscale.off("disconnect");
-    listening_disconnect_output.innerText = '';
+    listening_disconnect_output.innerText = "";
   };
 </script>
 
@@ -467,9 +492,24 @@
 
 <div class="container">
   <h1 class="text-center">
-    Demo page to test a browser wallet extension on EVERIP-32 (formerly TIP-32) compatibility
+    Demo page to test a browser wallet extension on EVERIP-32 (formerly TIP-32)
+    compatibility
   </h1>
   {#if $loaded}
+    <div class="is-center" style="padding: 2rem;">
+      <b>Web-extension detecting: &nbsp;</b>
+      <b>
+        {#if detected_web_extension}
+          Web-extension is detected.
+        {:else}
+          No web-extension. Please check
+          <a
+            target="_blank"
+            href="https://pertinaxwallet.com/installation">Pertinax wallet
+            installation page</a>
+        {/if}
+      </b>
+    </div>
     <Row>
       <Col>
         <Details>
@@ -477,23 +517,40 @@
           <Field label="Module">
             <Input id="ever_MODULE_METHOD_module" />
             <p>
-            Specify a module name from <a href="https://github.com/tonlabs/TON-SDK/blob/master/docs/reference/types-and-methods">here</a>
+              Specify a module name from
+              <a
+                href="https://github.com/tonlabs/TON-SDK/blob/master/docs/reference/types-and-methods">here</a>
             </p>
           </Field>
           <Field label="Method">
             <Input id="ever_MODULE_METHOD_method" />
             <p>
-              Specify a method name for needed module. For example, for <b>client</b> module you can enter <b>version</b>. You can see method name for <b>client</b> module <a href="https://github.com/tonlabs/TON-SDK/blob/master/docs/reference/types-and-methods/mod_client.md"> here </a>
+              Specify a method name for needed module. For example, for
+              <b>client</b>
+              module you can enter
+              <b>version</b>. You can see method name for
+              <b>client</b>
+              module
+              <a
+                href="https://github.com/tonlabs/TON-SDK/blob/master/docs/reference/types-and-methods/mod_client.md">
+                here
+              </a>
             </p>
           </Field>
           <Field label="Params">
-            <Input textarea rows=4 id="ever_MODULE_METHOD_params" value="&lbrace; &rbrace;" />
+            <Input
+              textarea
+              rows="4"
+              id="ever_MODULE_METHOD_params"
+              value="&lbrace; &rbrace;" />
             <p>
               Specify a params for needed method. They must be in JSON format.
             </p>
           </Field>
           <Field>
-            <Button success on:click={ever_module_method}>Run SDK method</Button>
+            <Button success on:click={ever_module_method}>
+              Run SDK method
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_MODULE_METHOD_output" />
@@ -503,7 +560,9 @@
         <Details>
           <span slot="summary">wallet_getSdkVersion</span>
           <Field>
-            <Button success on:click={wallet_getSdkVersion}>Get SDK version</Button>
+            <Button success on:click={wallet_getSdkVersion}>
+              Get SDK version
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="wallet_getSdkVersion_output" />
@@ -547,7 +606,9 @@
         <Details>
           <span slot="summary">ever_endpoint</span>
           <Field>
-            <Button success on:click={ever_endpoint}>Get current endpoint</Button>
+            <Button success on:click={ever_endpoint}>
+              Get current endpoint
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_endpoint_output" />
@@ -570,8 +631,8 @@
           <Field label="Message">
             <Input id="ever_sendTransaction_message" />
             <p>
-              This field is not required, but can be used for providing order ID or
-              some additional information.
+              This field is not required, but can be used for providing order ID
+              or some additional information.
             </p>
           </Field>
           <Field>
@@ -625,7 +686,9 @@
         <Details>
           <span slot="summary">ever_crypto_generate_random_bytes</span>
           <Field label="Length">
-            <Input id="ever_crypto_generate_random_bytes_length" type="number" />
+            <Input
+              id="ever_crypto_generate_random_bytes_length"
+              type="number" />
           </Field>
           <Field>
             <Button success on:click={ever_crypto_generate_random_bytes}>
@@ -633,7 +696,9 @@
             </Button>
           </Field>
           <Field>
-            <div class="break-all" id="ever_crypto_generate_random_bytes_output" />
+            <div
+              class="break-all"
+              id="ever_crypto_generate_random_bytes_output" />
           </Field>
         </Details>
 
@@ -649,7 +714,9 @@
             <Input id="ever_encryptMessage_their_public" />
           </Field>
           <Field>
-            <Button success on:click={ever_encryptMessage}>Encrypt message</Button>
+            <Button success on:click={ever_encryptMessage}>
+              Encrypt message
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_encryptMessage_output" />
@@ -668,7 +735,9 @@
             <Input id="ever_decryptMessage_their_public" />
           </Field>
           <Field>
-            <Button success on:click={ever_decryptMessage}>Decrypt message</Button>
+            <Button success on:click={ever_decryptMessage}>
+              Decrypt message
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_decryptMessage_output" />
@@ -687,7 +756,9 @@
             <Input id="ever_subscribe_result" />
           </Field>
           <Field>
-            <Button success on:click={ever_subscribe}>Get subscription id</Button>
+            <Button success on:click={ever_subscribe}>
+              Get subscription id
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_subscribe_output" />
@@ -700,7 +771,9 @@
             <Input id="ever_unsubscribe_id" number />
           </Field>
           <Field>
-            <Button success on:click={ever_unsubscribe}>Unsubscribe by id</Button>
+            <Button success on:click={ever_unsubscribe}>
+              Unsubscribe by id
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="ever_unsubscribe_output" />
@@ -711,10 +784,14 @@
         <Details>
           <span slot="summary">Listen events "message"</span>
           <Field>
-            <Button success on:click={enable_listening_message}>Enable listening</Button>
+            <Button success on:click={enable_listening_message}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_message}>Disable listening</Button>
+            <Button success on:click={disable_listening_message}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_message_output" />
@@ -724,10 +801,14 @@
         <Details>
           <span slot="summary">Listen events "endpointChanged"</span>
           <Field>
-            <Button success on:click={enable_listening_endpointChanged}>Enable listening</Button>
+            <Button success on:click={enable_listening_endpointChanged}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_endpointChanged}>Disable listening</Button>
+            <Button success on:click={disable_listening_endpointChanged}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_endpointChanged_output" />
@@ -737,10 +818,14 @@
         <Details>
           <span slot="summary">Listen events "unlockStateChanged"</span>
           <Field>
-            <Button success on:click={enable_listening_unlockStateChanged}>Enable listening</Button>
+            <Button success on:click={enable_listening_unlockStateChanged}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_unlockStateChanged}>Disable listening</Button>
+            <Button success on:click={disable_listening_unlockStateChanged}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_unlockStateChanged_output" />
@@ -750,10 +835,14 @@
         <Details>
           <span slot="summary">Listen events "accountChanged"</span>
           <Field>
-            <Button success on:click={enable_listening_accountChanged}>Enable listening</Button>
+            <Button success on:click={enable_listening_accountChanged}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_accountChanged}>Disable listening</Button>
+            <Button success on:click={disable_listening_accountChanged}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_accountChanged_output" />
@@ -763,10 +852,14 @@
         <Details>
           <span slot="summary">Listen events "connect"</span>
           <Field>
-            <Button success on:click={enable_listening_connect}>Enable listening</Button>
+            <Button success on:click={enable_listening_connect}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_connect}>Disable listening</Button>
+            <Button success on:click={disable_listening_connect}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_connect_output" />
@@ -776,10 +869,14 @@
         <Details>
           <span slot="summary">Listen events "disconnect"</span>
           <Field>
-            <Button success on:click={enable_listening_disconnect}>Enable listening</Button>
+            <Button success on:click={enable_listening_disconnect}>
+              Enable listening
+            </Button>
           </Field>
           <Field>
-            <Button success on:click={disable_listening_disconnect}>Disable listening</Button>
+            <Button success on:click={disable_listening_disconnect}>
+              Disable listening
+            </Button>
           </Field>
           <Field>
             <div class="break-all" id="listening_disconnect_output" />
